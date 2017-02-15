@@ -1,6 +1,7 @@
 package com.mercado.bean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Messages;
 
+import com.mercado.DAO.CidadeDAO;
 import com.mercado.DAO.PessoaDAO;
 import com.mercado.modelo.Cidade;
 import com.mercado.modelo.Estado;
@@ -25,6 +27,16 @@ public class PessoaBean implements Serializable {
 	private List<Pessoa> pessoas;
 	private List<Cidade> cidades;
 	private List<Estado> estados;
+	
+	private Estado estado;
+
+	public Estado getEstado() {
+		return estado;
+	}
+
+	public void setEstado(Estado estado) {
+		this.estado = estado;
+	}
 
 	public void novo() {
 		pessoa = new Pessoa();
@@ -67,6 +79,20 @@ public class PessoaBean implements Serializable {
 			pessoas = pessoaDAO.listar();
 		} catch (RuntimeException erro) {
 			Messages.addGlobalError("Erro ao listar!");
+			erro.printStackTrace();
+		}
+	}
+	
+	public void popular(){
+		try {
+			if(estado != null) {
+				CidadeDAO cidadeDAO = new CidadeDAO();
+				cidades = cidadeDAO.buscarPorEstado(estado.getCodigo());
+			} else {
+				cidades = new ArrayList<>();
+			}
+		} catch (RuntimeException erro) {
+			Messages.addGlobalError("Erro em Popular");
 			erro.printStackTrace();
 		}
 	}
