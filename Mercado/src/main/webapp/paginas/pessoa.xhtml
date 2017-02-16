@@ -75,6 +75,13 @@
 					value="#{pessoaBean.pessoa.nome}" required="true"
 					requiredMessage="O campo 'Nome' é obrigatório" />
 
+				<p:outputLabel for="sexo" value="Sexo:" />
+				<p:selectOneButton id="sexo" value="#{pessoaBean.pessoa.sexo}">
+					<f:selectItem itemLabel="Masculino" itemValue="M" />
+					<f:selectItem itemLabel="Feminino" itemValue="F" />
+				</p:selectOneButton>
+
+
 				<p:outputLabel for="rg" value="RG:" />
 				<p:inputText id="rg" value="#{pessoaBean.pessoa.rg}" required="true"
 					requiredMessage="O campo 'Nome' é obrigatório" />
@@ -92,6 +99,8 @@
 						itemLabel="Selecione uma ESTADO" />
 					<f:selectItems value="#{pessoaBean.estados}" var="estado"
 						itemValue="#{estado}" itemLabel="#{estado.nome}" />
+					<p:ajax listener="#{pessoaBean.popular}"
+						update=":formCadastro:cidade" />
 				</p:selectOneMenu>
 
 				<p:outputLabel for="cidade" value="Cidade:" />
@@ -114,6 +123,16 @@
 				<p:inputText id="telefone" value="#{pessoaBean.pessoa.telefone}"
 					required="true" requiredMessage="O campo 'Telefone' é obrigatório" />
 
+				<!-- <p:outputLabel for="celular" value="Celular:" />
+				<p:inputText id="celular" mask="(99) 99999-99999" size="15"
+					value="#{pessoaBean.pessoa.celular}" required="true"
+					requiredMessage="O campo 'Celular' é obrigatório" />
+
+				<p:outputLabel for="datanascimento" value="data nascimento:" />
+				<p:inputText id="datanascimento" maxlength="100" size="50" value="#{pessoaBean.pessoa.datanascimento}"
+					required="true" requiredMessage="O campo 'nascimento' é obrigatório">
+					<f:convertDateTime pattern="dd/MM/yyyy"/>
+				</p:inputText>  -->
 			</h:panelGrid>
 
 			<h:panelGrid columns="2">

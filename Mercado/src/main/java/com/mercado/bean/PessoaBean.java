@@ -12,6 +12,7 @@ import javax.faces.event.ActionEvent;
 import org.omnifaces.util.Messages;
 
 import com.mercado.DAO.CidadeDAO;
+import com.mercado.DAO.EstadoDAO;
 import com.mercado.DAO.PessoaDAO;
 import com.mercado.modelo.Cidade;
 import com.mercado.modelo.Estado;
@@ -27,7 +28,7 @@ public class PessoaBean implements Serializable {
 	private List<Pessoa> pessoas;
 	private List<Cidade> cidades;
 	private List<Estado> estados;
-	
+
 	private Estado estado;
 
 	public Estado getEstado() {
@@ -39,16 +40,33 @@ public class PessoaBean implements Serializable {
 	}
 
 	public void novo() {
-		pessoa = new Pessoa();
+
+		try {
+			pessoa = new Pessoa();
+			EstadoDAO estadoDAO = new EstadoDAO();
+			estados = estadoDAO.listar();
+
+			cidades = new ArrayList<Cidade>();
+		} catch (RuntimeException erro) {
+			Messages.addGlobalError("erro ao criar");
+			erro.printStackTrace();
+		}
+
 	}
 
 	public void salvar() {
 		try {
-			PessoaDAO dao = new PessoaDAO();
-			dao.merge(pessoa);
-			novo();
-			listar();
-			Messages.addGlobalInfo("Salvo com sucesso");
+			PessoaDAO pessoaDAO = new PessoaDAO();
+			pessoaDAO.merge(pessoa);
+
+			pessoas = pessoaDAO.Listar("nome");
+			pessoa = new Pessoa();
+
+			estado = new Estado();
+
+			EstadoDAO estadoDAO = new EstadoDAO();
+			estados = estadoDAO.Listar("nome");
+
 		} catch (RuntimeException erro) {
 			Messages.addGlobalError("erro ao salvar");
 			erro.printStackTrace();
@@ -56,7 +74,18 @@ public class PessoaBean implements Serializable {
 	}
 
 	public void editar(ActionEvent event) {
+		try {
 		pessoa = (Pessoa) event.getComponent().getAttributes().get("pessoaSelecionada");
+		estado = pessoa.getCidade().getEstado();
+		EstadoDAO estadoDAO = new EstadoDAO();
+		estados = estadoDAO.Listar("nome");
+		
+		CidadeDAO cidadeDAO = new CidadeDAO();
+		cidades = cidadeDAO.buscarPorEstado(estado.getCodigo());
+		} catch(RuntimeException erro) {
+			Messages.addGlobalError("erro ao listar");
+			erro.printStackTrace();
+		}
 	}
 
 	public void excluir(ActionEvent event) {
@@ -82,10 +111,10 @@ public class PessoaBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
-	public void popular(){
+
+	public void popular() {
 		try {
-			if(estado != null) {
+			if (estado != null) {
 				CidadeDAO cidadeDAO = new CidadeDAO();
 				cidades = cidadeDAO.buscarPorEstado(estado.getCodigo());
 			} else {

@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -13,6 +15,9 @@ public class Pessoa extends GenericoModelo{
 	
 	@Column(length= 50 , nullable = false)
 	private String nome;
+	@ManyToOne
+	@JoinColumn(nullable = true)
+	private Cidade cidade;
 	@Column(length= 30, nullable = false)
 	private String rg;
 	@Temporal(TemporalType.DATE)
@@ -67,5 +72,11 @@ public class Pessoa extends GenericoModelo{
 	}
 	@Column(length= 1 , nullable = false)
 	private String sexo;
+	public Cidade getCidade() {
+		return cidade;
+	}
+	public void setCidade(Cidade cidade) {
+		this.cidade = cidade;
+	}
 
 }
